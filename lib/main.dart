@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,12 +15,17 @@ import 'package:splashscreen/splashscreen.dart';
 import './providers/data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'firebase/messaging.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  initializeMessaging();
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
   runApp(MyApp());
 }
 

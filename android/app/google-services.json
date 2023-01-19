@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1078761400683",
+    "project_id": "zineapp2023",
+    "storage_bucket": "zineapp2023.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1078761400683:android:583e909617622f54be042e",
+        "android_client_info": {
+          "package_name": "com.example.zine"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1078761400683-3vrc2fdgojfeku6r0db3codgrie954po.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVjLluXu71D9K-BAYLbmQxw26wYfRdpgE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1078761400683-3vrc2fdgojfeku6r0db3codgrie954po.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

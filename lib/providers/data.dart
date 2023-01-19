@@ -8,6 +8,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_socket_io/flutter_socket_io.dart';
 import 'package:flutter_socket_io/socket_io_manager.dart';
 
+import '../firebase/messaging.dart';
+
 const mainUrl = "zine-backend.onrender.com";
 const testUrl = "zine-backend.onrender.com";
 const url = "https://zine-backend.onrender.com";
@@ -262,9 +264,12 @@ class Data with ChangeNotifier {
     try {
       print("connection to socket");
 
+      String registrationToken = await getFCMToken();
+
       socketIO = SocketIOManager().createSocketIO(
         '$url',
         "/",
+        query: registrationToken
       );
 
       socketIO.init();

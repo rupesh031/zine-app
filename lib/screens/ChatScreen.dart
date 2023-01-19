@@ -108,7 +108,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   elevation: 10,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(80),
+                        topLeft: Radius.circular(10),
                         topRight: Radius.circular(10),
                         bottomLeft: Radius.circular(10),
                         bottomRight: Radius.circular(10)),
