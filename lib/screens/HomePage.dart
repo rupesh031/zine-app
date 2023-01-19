@@ -889,7 +889,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<Data>(context);
+    print(provider);
     var size = MediaQuery.of(context).size;
+    print("network error");
     print(provider.networkError);
     var orientation = MediaQuery.of(context).orientation;
     if (provider.networkError && !provider.isAnonymous) {
@@ -1036,7 +1038,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     IconButton(
                       icon: Icon(
-                        EvaIcons.globeOutline,
+                        EvaIcons.giftOutline,
                         size: 30,
                       ),
                       color: Colors.white,
@@ -1441,10 +1443,16 @@ class _HomePageState extends State<HomePage> {
                             ),
                             child: Container(
                               width: 140,
-                              child: RaisedButton(
-                                color: Colors.blue,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all(Colors.blue),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ),
                                 ),
                                 child: Padding(
                                   padding: EdgeInsets.all(10),

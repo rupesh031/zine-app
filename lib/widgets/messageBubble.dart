@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_linkify/flutter_linkify.dart';
+// import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -14,6 +14,7 @@ const style = TextStyle(
   fontWeight: FontWeight.bold,
 );
 
+// ignore: must_be_immutable
 class MessageBubble extends StatelessWidget {
   final String text;
   final String name;
@@ -27,22 +28,31 @@ class MessageBubble extends StatelessWidget {
   String getInitials(String text) {
     String firstPart = text;
     String secondPart;
+    print(text);
     if (text.contains(" ")) {
       firstPart = text.substring(0, text.indexOf(" "));
       secondPart = text.substring(text.indexOf(" ") + 1, text.length);
+      print(firstPart[0].toUpperCase());
 
       if (secondPart.isEmpty) {
-        secondPart = "A";
+        return firstPart[0].toUpperCase();
       }
       if (secondPart[0] == "(") {
         secondPart = "Zine";
       }
       return firstPart[0].toUpperCase() + secondPart[0].toUpperCase();
     }
-    if (firstPart.length < 2) {
-      firstPart += firstPart;
-    }
-    return firstPart[0].toUpperCase() + firstPart[1].toUpperCase();
+    return text[0].toUpperCase();
+    // return text;
+    // return firstPart[0].toUpperCase() + secondPart[0].toUpperCase();
+    // } else {
+    //   return "J";
+    //   // return firstPart[0].toUpperCase();
+    // }
+    // if (firstPart.length < 2) {
+    //   firstPart += firstPart;
+    // }
+    // return firstPart[0].toUpperCase() + firstPart[1].toUpperCase();
   }
 
   // String getText(String text) {
@@ -72,7 +82,7 @@ class MessageBubble extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Stack(
-        overflow: Overflow.visible,
+        // overflow: Overflow.visible,
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,7 +176,8 @@ class MessageBubble extends StatelessWidget {
               radius: 18,
               backgroundColor: color,
               child: Text(
-                getInitials(name == null ? "NULLLL" : name),
+                // name,
+                getInitials(name == null ? "NIL" : name),
                 style: TextStyle(
                   fontFamily: "Opensans",
                   fontSize: 12,

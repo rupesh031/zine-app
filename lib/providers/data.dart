@@ -8,9 +8,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_socket_io/flutter_socket_io.dart';
 import 'package:flutter_socket_io/socket_io_manager.dart';
 
-const mainUrl = "18.207.115.53:3000";
-const testUrl = "10.0.2.2";
-const url = "18.207.115.53:3000";
+const mainUrl = "zine-backend.onrender.com";
+const testUrl = "zine-backend.onrender.com";
+const url = "https://zine-backend.onrender.com";
+// const url = "http://192.168.56.1:8080";
 
 class Message {
   DateTime dateTime;
@@ -95,8 +96,9 @@ class Data with ChangeNotifier {
     try {
       print("uid:" + uid);
       print("token:" + token);
+
       response = await http.post(
-        "http://$url/api/rooms",
+        Uri.parse("$url/api/rooms"),
         headers: {
           "authorization": "Bearer $token",
           "content-type": "application/json",
@@ -107,10 +109,17 @@ class Data with ChangeNotifier {
           },
         ),
       );
+      print(response.body);
       var body = json.decode(response.body);
       print(body);
+      if (body == null) print("body is null");
       if (body != null) {
         List fetchedRooms = body["chats"];
+        if (fetchedRooms == null) {
+          print(token);
+          print("0 rooms");
+          return;
+        }
         number = fetchedRooms.length;
         print("rooms: $number");
         notifyListeners();
@@ -148,50 +157,50 @@ class Data with ChangeNotifier {
             }
           });
 
-          // List<Message> chats = [];
-          // http.Response messages = await http.post(
-          //   "http://$url/api/messages",
-          //   headers: {
-          //     "authorization": "Bearer $token",
-          //     "content-type": "application/json",
-          //   },
-          //   body: json.encode(
-          //     {
-          //       "roomId": roomId,
-          //     },
-          //   ),
-          // );
-          // if (json.decode(messages.body) != null) {
-          //   List messageBody = json.decode(messages.body)["messages"];
-          //   if (messageBody != null) {
-          //     messageBody.forEach((element) {
-          //       String text = element["content"];
-          //       String name = element["senderName"];
-          //       String id = element["senderId"];
-          //       Member member;
+          List<Message> chats = [];
+          http.Response messages = await http.post(
+            Uri.parse("$url/api/messages"),
+            headers: {
+              "authorization": "Bearer $token",
+              "content-type": "application/json",
+            },
+            body: json.encode(
+              {
+                "roomId": roomId,
+              },
+            ),
+          );
+          if (json.decode(messages.body) != null) {
+            List messageBody = json.decode(messages.body)["messages"];
+            if (messageBody != null) {
+              messageBody.forEach((element) {
+                String text = element["content"];
+                String name = element["senderName"];
+                String id = element["senderId"];
+                Member member;
 
-          //       if (name != null) {
-          //         member = participants.firstWhere(
-          //           (element) => element.name == name,
-          //           orElse: () {
-          //             return Member(
-          //               name: name,
-          //               uid: id,
-          //               color: Colors.green,
-          //             );
-          //           },
-          //         );
-          //         DateTime date = DateTime.parse(element["createdAt"]);
+                if (name != null) {
+                  member = participants.firstWhere(
+                    (element) => element.name == name,
+                    orElse: () {
+                      return Member(
+                        name: name,
+                        uid: id,
+                        color: Colors.green,
+                      );
+                    },
+                  );
+                  DateTime date = DateTime.parse(element["createdAt"]);
 
-          //         chats.add(Message(
-          //           text: text,
-          //           sender: member,
-          //           dateTime: date,
-          //         ));
-          //       }
-          //     });
-          //   }
-          // }
+                  chats.add(Message(
+                    text: text,
+                    sender: member,
+                    dateTime: date,
+                  ));
+                }
+              });
+            }
+          }
 
           if (roomName == "undefined,undefined" ||
               !rooms.any((element) => element.name == roomName)) {
@@ -231,6 +240,8 @@ class Data with ChangeNotifier {
         });
       }
     } catch (error) {
+      print("fetch rooms");
+      print(error);
       print("ERROR");
       networkError = true;
       notifyListeners();
@@ -249,9 +260,16 @@ class Data with ChangeNotifier {
 
   Future<void> init() async {
     try {
-      socketIO = SocketIOManager().createSocketIO('http://$url', "/");
+      print("connection to socket");
+
+      socketIO = SocketIOManager().createSocketIO(
+        '$url',
+        "/",
+      );
+
       socketIO.init();
       socketIO.connect();
+      print("connected to socket");
       socketIO.subscribe('message', (jsonData) {
         print(jsonData);
         var data = json.decode(jsonData);
@@ -278,6 +296,8 @@ class Data with ChangeNotifier {
         notifyListeners();
       });
     } catch (error) {
+      print("connection to socket failed");
+
       print(error.toString());
     }
   }
@@ -302,7 +322,7 @@ class Data with ChangeNotifier {
     );
     List<Message> chats = [];
     http.Response messages = await http.post(
-      "http://$url/api/messages",
+      Uri.parse("$url/api/messages"),
       headers: {
         "authorization": "Bearer $token",
         "content-type": "application/json",
@@ -313,6 +333,8 @@ class Data with ChangeNotifier {
         },
       ),
     );
+    print("message");
+    print(messages);
     if (json.decode(messages.body) != null) {
       List messageBody = json.decode(messages.body)["messages"];
       if (messageBody != null) {
@@ -353,7 +375,8 @@ class Data with ChangeNotifier {
 
   Future<void> getDMroom(Member member) async {
     http.Response request = await http.get(
-      "http://$url/api/checkroom?userId=${member.uid}&firstUserName=${member.name}&secondUserName=${this.name}",
+      Uri.parse(
+          "$url/api/checkroom?userId=${member.uid}&firstUserName=${member.name}&secondUserName=${this.name}"),
       headers: {
         "authorization": "Bearer $token",
         "content-type": "application/json",

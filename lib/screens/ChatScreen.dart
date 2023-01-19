@@ -300,7 +300,7 @@ class TopBar extends StatelessWidget {
                 ),
               ),
               Spacer(),
-              FlatButton(
+              ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },

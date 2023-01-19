@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
+
+// import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:zine/widgets/signInForm.dart';
@@ -9,9 +9,10 @@ import "package:shared_preferences/shared_preferences.dart";
 import 'package:provider/provider.dart';
 import 'package:zine/providers/data.dart';
 
-const mainUrl = "18.207.115.53:3000";
-const testUrl = "10.0.2.2";
-const url = "18.207.115.53:3000";
+const mainUrl = "https://zine-backend.onrender.com";
+const testUrl = "https://zine-backend.onrender.com";
+const url = "https://zine-backend.onrender.com";
+// const url = "http://192.168.56.1:8080";
 
 class AuthScreen extends StatefulWidget {
   static const route = "/auth";
@@ -34,11 +35,18 @@ class _AuthScreenState extends State<AuthScreen> {
         data["user"]["fullName"], data["user"]["email"], data["user"]["_id"]);
   }
 
+  void get() async {
+    final res = await http.get(Uri.parse("$url/api"));
+    print("connected");
+    print(res.body);
+  }
+
   @override
   Widget build(BuildContext context) {
     var orientation = MediaQuery.of(context).orientation;
+    get();
     return FlutterLogin(
-      emailValidator: (value) {
+      userValidator: (value) {
         if (value.isEmpty) {
           return "Please enter a valid college email address";
         }
@@ -48,8 +56,8 @@ class _AuthScreenState extends State<AuthScreen> {
         if (value.length != 27 && value.length != 22) {
           return "Please enter a valid college email address";
         }
-        if ((value.startsWith("2020") && value.endsWith("@mnit.ac.in")) ||
-            (value.startsWith("2020") && value.endsWith("@iiitkota.ac.in"))) {
+        if ((value.startsWith("2021") && value.endsWith("@mnit.ac.in")) ||
+            (value.startsWith("2021") && value.endsWith("@iiitkota.ac.in"))) {
           return null;
         }
 
@@ -63,7 +71,7 @@ class _AuthScreenState extends State<AuthScreen> {
       },
       messages: LoginMessages(
           confirmPasswordError: "Passwords do not match",
-          usernameHint: "College Email",
+          userHint: "College Email",
           loginButton: "Login",
           signupButton: "Sign Up",
           recoverPasswordDescription: "Send us a mail to reset your password",
@@ -106,11 +114,13 @@ class _AuthScreenState extends State<AuthScreen> {
         if (map == null) {
           return Future.value("Please enter the required information");
         }
+
         http.Response response;
         try {
-          print("reached");
+          print("reached hello");
+          print(url);
           response = await http.post(
-            "https://$url/api/signup",
+            Uri.parse("$url/api/signup"),
             headers: {
               "content-type": "application/json",
             },
@@ -126,7 +136,10 @@ class _AuthScreenState extends State<AuthScreen> {
               },
             ),
           );
+
           var body = json.decode(response.body);
+          print(body);
+          print("hello");
           if (body == null) {
             return Future.value("An error occured. Please try again.");
           }
@@ -140,7 +153,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
             print("uid:" + uid);
             var room1 = await http.post(
-              "http://$url/api/joinroom",
+              Uri.parse("$url/api/joinroom"),
               headers: {
                 "content-type": "application/json",
               },
@@ -153,7 +166,7 @@ class _AuthScreenState extends State<AuthScreen> {
               ),
             );
             var room2 = await http.post(
-              "http://$url/api/joinroom",
+              Uri.parse("$url/api/joinroom"),
               headers: {
                 "content-type": "application/json",
               },
@@ -180,7 +193,9 @@ class _AuthScreenState extends State<AuthScreen> {
             print(json.decode(room1.body));
           }
         } catch (error) {
-          return Future.value("An error occured. Please try again.");
+          // return Future.value("An error occured. Please try again.");
+          print(error);
+          return Future.value(error.toString());
         }
 
         return Future.value(null);
@@ -190,7 +205,7 @@ class _AuthScreenState extends State<AuthScreen> {
         http.Response response;
         try {
           response = await http.post(
-            "http://$url/api/signin",
+            Uri.parse("$url/api/signin"),
             body: json.encode(
               {
                 "email": data.name,
@@ -221,16 +236,16 @@ class _AuthScreenState extends State<AuthScreen> {
       },
       onRecoverPassword: (data) async {
         FocusScope.of(context).unfocus();
-        final Email email = Email(
-          subject: "Password reset request",
-          body:
-              "I have forgotten my password for id $data on the Zine Communication Channel. Please reset it to <enter new password here>.",
-          isHTML: false,
-          recipients: [
-            "pavnesh@zine.co.in",
-          ],
-        );
-        await FlutterEmailSender.send(email);
+        // final Email email = Email(
+        //   subject: "Password reset request",
+        //   body:
+        //       "I have forgotten my password for id $data on the Zine Communication Channel. Please reset it to <enter new password here>.",
+        //   isHTML: false,
+        //   recipients: [
+        //     "pavnesh@zine.co.in",
+        //   ],
+        // );
+        // await FlutterEmailSender.send(email);
         return Future.value(null);
       },
     );

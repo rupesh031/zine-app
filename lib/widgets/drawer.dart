@@ -11,7 +11,7 @@ class CustomDrawer extends StatelessWidget {
   String getInitials(String text) {
     String firstPart = text;
     String secondPart;
-    if (text.contains(" ")) {
+    if (text != null && text.contains(" ")) {
       firstPart = text.substring(0, text.indexOf(" "));
       secondPart = text.substring(text.indexOf(" ") + 1, text.length);
 
@@ -65,7 +65,7 @@ class CustomDrawer extends StatelessWidget {
                         ),
                       ),
                       actions: [
-                        FlatButton(
+                        TextButton(
                           child: Text(
                             "YES",
                             style: TextStyle(
@@ -80,7 +80,7 @@ class CustomDrawer extends StatelessWidget {
                             Navigator.of(context).pop();
                           },
                         ),
-                        FlatButton(
+                        TextButton(
                           child: Text(
                             "NO",
                             style: TextStyle(
